@@ -4,7 +4,7 @@ import numpy as np
 pd.set_option("display.max_columns", 20)
 pd.set_option("display.width", 90)
 
-###1 Імпорт та первинне дослідження:
+####1 Імпорт та первинне дослідження:
 
 url = "data/uk-500.csv"
 df_origin = pd.read_csv(url)
@@ -40,7 +40,7 @@ for i, col in enumerate(df_origin.columns):
     print(f"{i:02d}. {col}")
 
 
-###2 Очищення даних:
+####2 Очищення даних:
 
 df = df_origin.copy()
 
@@ -90,7 +90,6 @@ for col in possible_web_cols:
 
 
 # clean phone/fax:
-
 def clean_phone(x):
     if pd.isna(x):
         return np.nan
@@ -110,7 +109,6 @@ for col in possible_phone_cols + possible_fax_cols:
 
 
 #clean first_, last_name:
-
 def title_if_str(s):
     if pd.isna(s):
         return np.nan
@@ -132,5 +130,66 @@ else:
     print("\n-----------haven t name ----")
 
 
-print(df.head())
+####3 Створення нових колонок (Feature Enginearing)
+
+df["full_name"] = df.first_name + " " + df.last_name
+
+# def email_domain(s):
+
+# !!!!! треба зробити:
+# df["email_domain"] = df.
+
+df["city_length"] = df["city"].apply(len)
+
+df["is_gmail"] = [True if "@gmail.com" in str(s).lower() else False for s in df["email"]]
+
+# print(df.head())
+
+
+####4 Фільтрація данихЖ
+
+print("\n------підвибірки--------")
+
+#Користувачі з доменом gmail.com:
+
+gmail_users = df.loc[df['is_gmail'] == True].copy()
+print("gmail_users", len(gmail_users))
+
+#Працівники компаній з "LLC" або "Ltd":
+
+# df["company_name"] 
+
+df["company_name"] = df["company_name"].fillna("")
+
+mask_LLC_Ltd = df.company_name.str.contains(r"\b(LLC|Ltd|llc|LTD|ltd)\b", regex=True, na=False)
+
+company_llc_ltd = df.loc[mask_LLC_Ltd].copy()
+
+print(company_llc_ltd)
+print("Company LLC and Ltd: ", len(company_llc_ltd))
+
+#доробити інші підвибірки
+
+
+####5 Позиційна вибірка:
+
+try:
+    first_10_cols_2_5 = df.iloc[:10, 2:6]
+    print("ПЕрші 10 рядків + колонки 2-5)")
+    print(first_10_cols_2_5)
+except Exception as e:
+    print("Can not (ПЕрші 10 рядків + колонки 2-5):", e)
+
+
+every_10th = df.iloc[::10, :].copy()
+print("\nevery 10th")
+print(every_10th)
+
+
+random_5 = df.sample(5, random_state=42)
+print("\nrandom 5 row")
+print(random_5)
+
+
+####6 Групування та статистика
 

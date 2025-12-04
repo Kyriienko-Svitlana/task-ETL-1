@@ -229,3 +229,4 @@ print(count_by_city)
 #Кількість унікальних доменів:
 
 # print(df["email"].str.split("@").str[-1].nunique())
+   

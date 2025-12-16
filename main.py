@@ -229,4 +229,14 @@ print(count_by_city)
 #Кількість унікальних доменів:
 
 # print(df["email"].str.split("@").str[-1].nunique())
-   
+
+####7 Експорт результатів:
+
+# 7.1 uk500_clean.csv	очищений датасет
+df.to_csv("uk500_clean.csv", index=False, encoding='utf8')
+# 7.2 gmail_users.csv	вибірка Gmail-користувачів
+df_gmail['full_name'].to_csv("gmail_users.csv", index=False, encoding='utf8')
+# 7.3 stats.xlsx	ТОП-міста та ТОП-домени у окремих вкладках
+with pd.ExcelWriter("stats.xlsx", engine='xlsxwriter') as writer:
+    count_five_city.to_excel(writer, sheet_name="TOP city", index=False)
+    count_by_domen.to_excel(writer, sheet_name="TOP domens", index=False)
